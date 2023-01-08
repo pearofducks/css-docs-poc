@@ -8,7 +8,7 @@ const props = defineProps({
     default: 16,
     type: Number
   },
-  color: {
+  fgColor: {
     default: '#3b82f680',
     type: String
   },
@@ -27,7 +27,7 @@ const dotSize = computed(() => props.size + 'px')
 
 <style scoped>
 .box {
-  --el-color: v-bind(color);
+  --el-color: v-bind(fgColor);
   --bg-color: v-bind(bgColor);
 }
 .dotted {
