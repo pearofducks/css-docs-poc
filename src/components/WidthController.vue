@@ -8,24 +8,26 @@ const containerEl = ref(null)
 const handleEl = ref(null)
 provide('widthController', { register: (c) => containerEl.value = c })
 
+const HANDLE_WIDTH = 16
 const { x } = useDraggable(handleEl)
 watch(x, () => {
   const wrapperRight = wrapperEl.value.getBoundingClientRect().right
   right.value = wrapperRight - x.value
-  if (right.value < 0) right.value = 0
+  if (right.value < HANDLE_WIDTH) right.value = HANDLE_WIDTH
 })
 
 watch(right, () => {
-  containerEl.value.style.marginRight = right.value + 'px'
-  handleEl.value.style.transform = `translateX(-${right.value}px)`
+  const v = right.value - HANDLE_WIDTH
+  containerEl.value.style.marginRight = v + 'px'
+  handleEl.value.style.transform = `translateX(-${v}px)`
 })
 </script>
 
 <template>
   <div class="relative pr-8" ref="wrapperEl">
     <slot />
-    <div ref="handleEl" @mousedown="handleDragStart" @touchstart="handleDragStart" class="absolute rounded-full right-0 top-0 bottom-0 flex items-center cursor-ew-resize">
+    <button ref="handleEl" @mousedown="handleDragStart" @touchstart="handleDragStart" class="absolute rounded-full right-0 top-0 bottom-0 flex items-center cursor-ew-resize">
       <div class="h-16 w-4 rounded-full bg-gray-600" />
-    </div>
+    </button>
   </div>
 </template>
