@@ -2,6 +2,13 @@
 import { provide, watch, ref } from 'vue'
 import { useDraggable } from '@vueuse/core'
 
+const props = defineProps({
+  minWidth: {
+    type: Number,
+    default: 240
+  }
+})
+
 const right = ref(0)
 const wrapperEl = ref(null)
 const containerEl = ref(null)
@@ -12,8 +19,14 @@ const HANDLE_WIDTH = 16
 const { x } = useDraggable(handleEl)
 watch(x, () => {
   const wrapperRight = wrapperEl.value.getBoundingClientRect().right
-  right.value = wrapperRight - x.value
-  if (right.value < HANDLE_WIDTH) right.value = HANDLE_WIDTH
+  const wrapperWidth = wrapperEl.value.getBoundingClientRect().width
+  const newRightValue = wrapperRight - x.value
+  const width = wrapperWidth - newRightValue
+  if (width < props.minWidth) return
+  // we don't return here because it's possible to move the cursor out-of-bounds faster than this function
+  // thus the width doesn't go back to 0 but is 'stuck' at the last update
+  else if (newRightValue < HANDLE_WIDTH) right.value = HANDLE_WIDTH
+  else right.value = newRightValue
 })
 
 watch(right, () => {
